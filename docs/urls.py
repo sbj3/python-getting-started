@@ -4,7 +4,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from docs import views
 
 from docs.views import DocViewSet, FolderViewSet, TopicViewSet, DocTopicViewSet
-
+from docs.views import UserViewSet
 from docs.views import api_root
 
 
@@ -59,6 +59,14 @@ topic_detail = TopicViewSet.as_view({
     'delete': 'destroy'
 })
 
+user_list = UserViewSet.as_view({
+    'get': 'list'
+})
+user_detail = UserViewSet.as_view({
+    'get': 'retrieve'
+})
+
+
 # API endpoints
 
 """
@@ -74,6 +82,8 @@ urlpatterns = format_suffix_patterns([
     path('topics/<int:pk>/', topic_detail, name='topic-detail'),
     path('doctopics/', doctopic_list, name='doctopic-list'),
     path('doctopics/<int:pk>/', doctopic_detail, name='doctopic-detail'),
+    path('users/', user_list, name='user-list'),
+    path('users/<int:pk>/', user_detail, name='user-detail'),
 ])
 
 urlpaterns = format_suffix_patterns(urlpatterns)

@@ -10,7 +10,7 @@ from docs.serializers import DocSerializer
 from docs.serializers import FolderSerializer
 from docs.serializers import TopicSerializer
 from docs.serializers import DocTopicSerializer
-# from docs.serializers import UserSerializer
+from docs.serializers import UserSerializer
 
 # from rest_framework import generics
 from rest_framework import permissions
@@ -22,7 +22,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
 
 @api_view
@@ -35,12 +35,12 @@ def api_root(request, format=None):
     })
 
 
-# class UserViewSet(viewsets.ReadOnlyModelViewSet):
-#     """
-#     This viewset automatically provides 'list' and 'retrieve' actions.
-#     """
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    This viewset automatically provides 'list' and 'retrieve' actions.
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class DocViewSet(viewsets.ModelViewSet):
@@ -51,6 +51,9 @@ class DocViewSet(viewsets.ModelViewSet):
     serializer_class = DocSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class FolderViewSet(viewsets.ModelViewSet):
@@ -63,6 +66,9 @@ class FolderViewSet(viewsets.ModelViewSet):
     serializer_class = FolderSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
 
 
 class TopicViewSet(viewsets.ModelViewSet):

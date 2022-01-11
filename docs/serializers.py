@@ -1,13 +1,14 @@
 from rest_framework import serializers
 # from snippets.models import Snippet, LANGUAGE_CHOICES, STYLE_CHOICES
 from docs.models import Document, Folder, Topic, DocTopic
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
 
 class FolderSerializer(serializers.HyperlinkedModelSerializer):
     parent_name = serializers.ReadOnlyField(source='parent.name')
     docs = serializers.HyperlinkedRelatedField(
         many=True, view_name='document-detail', read_only=True)
+    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = Folder
@@ -47,3 +48,12 @@ class DocTopicSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'url', 'created',
                   'doc_id', 'topic_id',
                   'docs', 'topics']
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    docs = serializers.HyperlinkedRelatedField(
+        many=True, view_name='doc-detail', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['url', 'id', 'username', 'docs']
